@@ -10,7 +10,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User addUser(User user) {
-        return null;
+        return userRepository.addUser(user);
     }
 
     @Override
@@ -20,11 +20,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User updateUser(User user) {
-        return null;
+        return userRepository.updateUser(user);
     }
 
     @Override
     public void deleteUser(long id) {
-
+        userRepository.deleteUser(id);
     }
 }
