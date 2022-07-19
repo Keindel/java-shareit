@@ -7,9 +7,6 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-/**
- * // TODO .
- */
 @Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

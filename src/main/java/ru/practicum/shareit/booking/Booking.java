@@ -20,7 +20,7 @@ public class Booking {
     private LocalDate bookingEnd;
     private long itemId;
     private long userId;
-    // TODO Approvement.class for rejections?
+    // TODO OwnerReaction.class for rejection/awaiting/approve?
     private boolean approvedByOwner;
 }
 
