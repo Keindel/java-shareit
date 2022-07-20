@@ -3,6 +3,8 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
@@ -19,12 +21,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUser(User user) {
-        return userRepository.updateUser(user);
+    public User updateUser(long userId, User updatesOfUser) {
+        User userFromRepo = userRepository.getById(userId);
+        if (userFromRepo == null) throw new NoSuchElementException("No such userId in repo");
+        if (updatesOfUser.getEmail() != null) {
+            userFromRepo.setEmail(updatesOfUser.getEmail());
+        }
+        if (updatesOfUser.getName() != null) {
+            userFromRepo.setName(updatesOfUser.getName());
+        }
+        return userRepository.updateUser(userFromRepo);
     }
 
     @Override
-    public void deleteUser(long id) {
-        userRepository.deleteUser(id);
+    public void deleteById(long id) {
+        userRepository.deleteById(id);
     }
 }

@@ -37,7 +37,7 @@ public class UserRepositoryImpl implements UserRepository{
     }
 
     @Override
-    public void deleteUser(long id) {
+    public void deleteById(long id) {
         users.remove(id);
     }
 }
