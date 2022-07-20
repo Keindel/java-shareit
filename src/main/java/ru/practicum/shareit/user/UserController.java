@@ -16,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto addUser(@RequestBody @Valid User user) {
+    public UserDto addUser(@Valid @RequestBody User user) {
         return UserDtoMapper.mapToDto(userService.addUser(user));
     }
 
@@ -26,8 +26,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable long userId, @RequestBody User user) {
-        return UserDtoMapper.mapToDto(userService.updateUser(userId, user));
+    public UserDto updateUser(@PathVariable long userId, @RequestBody UserDto userDto) {
+        return UserDtoMapper.mapToDto(userService.updateUser(userId, userDto));
     }
 
     @DeleteMapping

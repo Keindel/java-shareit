@@ -12,6 +12,10 @@ public class UserDtoMapper {
     }
 
     public static User mapToUser(UserDto userDto) {
-        return null;
+        return User.builder()
+                .id(userDto.getId())
+                .email(userDto.getEmail())
+                .name(userDto.getName())
+                .build();
     }
 }
