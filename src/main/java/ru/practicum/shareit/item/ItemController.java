@@ -5,48 +5,63 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
-import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto addItem(@RequestBody @Valid Item item) {
-        return ItemDtoMapper.mapToDto(itemService.addItem(item));
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                           @RequestBody @Valid Item item) {
+        return ItemDtoMapper.mapToDto(itemService.addItem(ownerId, item));
     }
 
-    @GetMapping
-    public ItemDto getById(@PathVariable long itemId) {
-        return ItemDtoMapper.mapToDto(itemService.getById(itemId));
+    @GetMapping("/{itemId}")
+    public Collection<ItemDto> getAllItemsOfOwner(@RequestHeader("X-Sharer-User-Id") long ownerId) {
+        return itemService.getAllItemsOfOwner(ownerId).stream()
+                .map(ItemDtoMapper::mapToDto).collect(Collectors.toList());
     }
 
-    @PatchMapping
-    public ItemDto updateItem(@RequestBody @Valid Item item) {
-        return ItemDtoMapper.mapToDto(itemService.updateItem(item));
+    @GetMapping("/{itemId}")
+    public ItemDto getById(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                           @PathVariable long itemId) {
+        return ItemDtoMapper.mapToDto(itemService.getById(ownerId, itemId));
+    }
+
+    @PatchMapping("/{itemId}")
+    public ItemDto updateById(@RequestBody ItemDto itemDto,
+                              @RequestHeader("X-Sharer-User-Id") long ownerId,
+                              @PathVariable long itemId) {
+        return ItemDtoMapper.mapToDto(itemService.updateItem(itemDto, ownerId, itemId));
     }
 
     @DeleteMapping
-    public void deleteById(@PathVariable long userId) {
-        itemService.deleteById(userId);
+    public void deleteById(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                           @PathVariable long itemId) {
+        itemService.deleteById(ownerId, itemId);
     }
+
+
     //search item
 
     //tell items for sharing
 
     //add item per request
-
 }
 
 /*
-Вам нужно реализовать добавление новых вещей, их редактирование, просмотр списка вещей и поиск
+Изменить можно название, описание и статус доступа к аренде.
+Редактировать вещь может только её владелец.
 
+
+Вам нужно реализовать добавление новых вещей, их редактирование, просмотр списка вещей и поиск
 
 1.	возможность рассказывать, какими вещами они готовы поделиться
 * ??????? 2.	находить нужную вещь и брать её в аренду на какое-то время

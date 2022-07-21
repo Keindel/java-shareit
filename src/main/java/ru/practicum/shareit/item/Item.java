@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item;
 
 import lombok.Builder;
 import lombok.Data;
@@ -21,9 +21,8 @@ public class Item {
     @NonNull
     @Size(max = 500)
     private String itemDescription;
-    private long ownerId;
+    private final long ownerId;
+    private Boolean available;
 
     private List<Long> bookingsIds;
-
-    private boolean availabilityStatus;
 }

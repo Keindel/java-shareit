@@ -7,6 +7,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoMapper;
 
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -21,16 +23,21 @@ public class UserController {
     }
 
     @GetMapping
+    public Collection<UserDto> getAll() {
+        return userService.getAll().stream().map(UserDtoMapper::mapToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{userId}")
     public UserDto getById(@PathVariable long userId) {
         return UserDtoMapper.mapToDto(userService.getById(userId));
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable long userId, @RequestBody UserDto userDto) {
-        return UserDtoMapper.mapToDto(userService.updateUser(userId, userDto));
+    public UserDto updateById(@PathVariable long userId, @RequestBody UserDto userDto) {
+        return UserDtoMapper.mapToDto(userService.updateById(userId, userDto));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{userId}")
     public void deleteById(@PathVariable long userId) {
         userService.deleteById(userId);
     }

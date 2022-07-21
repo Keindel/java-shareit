@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -17,21 +19,28 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public Collection<User> getAll() {
+        return userRepository.getAll();
+    }
+
+    @Override
     public User getById(long id) {
         return userRepository.getById(id);
     }
 
     @Override
-    public User updateUser(long userId, UserDto updatesOfUser) {
+    public User updateById(long userId, UserDto updatesOfUser) {
         User userFromRepo = userRepository.getById(userId);
-        if (userFromRepo == null) throw new NoSuchElementException("No such userId in repo");
+
+        User userFromRepoCopy = new User(userFromRepo.getId(), userFromRepo.getName(),
+                userFromRepo.getEmail(), userFromRepo.getItemsIdsForSharing());
         if (updatesOfUser.getEmail() != null) {
-            userFromRepo.setEmail(updatesOfUser.getEmail());
+            userFromRepoCopy.setEmail(updatesOfUser.getEmail());
         }
         if (updatesOfUser.getName() != null) {
-            userFromRepo.setName(updatesOfUser.getName());
+            userFromRepoCopy.setName(updatesOfUser.getName());
         }
-        return userRepository.updateUser(userFromRepo);
+        return userRepository.updateById(userFromRepoCopy);
     }
 
     @Override
