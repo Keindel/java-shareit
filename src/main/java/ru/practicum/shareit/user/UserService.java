@@ -7,8 +7,12 @@ import java.util.Collection;
 
 public interface UserService {
     User addUser(User user);
+
     Collection<User> getAll();
+
     User getById(long id) throws UserNotFoundException;
+
     User updateById(long userId, UserDto updatesOfUser) throws UserNotFoundException;
+
     void deleteById(long id);
 }
