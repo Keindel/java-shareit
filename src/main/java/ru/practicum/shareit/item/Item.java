@@ -14,14 +14,15 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Item {
     @EqualsAndHashCode.Include
-    private long itemId;
+    private long id;
     @NotBlank
     @Size(max = 50)
-    private String itemName;
+    private String name;
     @NonNull
     @Size(max = 500)
-    private String itemDescription;
+    private String description;
     private final long ownerId;
+    @NonNull
     private Boolean available;
 
     private List<Long> bookingsIds;

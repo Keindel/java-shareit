@@ -10,9 +10,9 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ItemDto {
-    private long itemId;
-    private String itemName;
-    private String itemDescription;
+    private long id;
+    private String name;
+    private String description;
     private Boolean available;
 
     private List<Long> bookingsIds;

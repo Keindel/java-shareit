@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Collection;
@@ -12,35 +14,35 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
 
     @Override
-    public Item addItem(long ownerId, Item item) {
+    public Item addItem(long ownerId, Item item) throws UserNotFoundException {
         return itemRepository.addItem(ownerId, item);
     }
 
     @Override
-    public Collection<Item> getAllItemsOfOwner(long ownerId) {
+    public Collection<Item> getAllItemsOfOwner(long ownerId) throws UserNotFoundException {
         return itemRepository.getAllItemsOfOwner(ownerId);
     }
 
     @Override
-    public Item getById(long ownerId, long id) {
-        return itemRepository.getById(ownerId, id);
+    public Item getById(long id) throws ItemNotFoundException {
+        return itemRepository.getById(id);
     }
 
     @Override
-    public Item updateItem(ItemDto itemDto, long ownerId, long itemId) {
-        Item itemFromRepo = itemRepository.getById(ownerId, itemId);
+    public Item updateItem(ItemDto itemDto, long ownerId, long itemId) throws UserNotFoundException, ItemNotFoundException {
+        Item itemFromRepo = itemRepository.getById(itemId);
 
-        Item itemFromRepoCopy = new Item(itemFromRepo.getItemId(), itemFromRepo.getItemName(),
-                itemFromRepo.getItemDescription(), itemFromRepo.getOwnerId(),
+        Item itemFromRepoCopy = new Item(itemFromRepo.getId(), itemFromRepo.getName(),
+                itemFromRepo.getDescription(), itemFromRepo.getOwnerId(),
                 itemFromRepo.getAvailable(), itemFromRepo.getBookingsIds());
-        String nameUpdate = itemDto.getItemName();
-        String descriptionUpdate = itemDto.getItemDescription();
+        String nameUpdate = itemDto.getName();
+        String descriptionUpdate = itemDto.getDescription();
         Boolean availabilityUpdate = itemDto.getAvailable();
         if (nameUpdate != null) {
-            itemFromRepoCopy.setItemName(nameUpdate);
+            itemFromRepoCopy.setName(nameUpdate);
         }
         if (descriptionUpdate != null) {
-            itemFromRepoCopy.setItemDescription(descriptionUpdate);
+            itemFromRepoCopy.setDescription(descriptionUpdate);
         }
         if (availabilityUpdate != null) {
             itemFromRepoCopy.setAvailable(availabilityUpdate);
@@ -49,7 +51,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteById(long ownerId, long id) {
+    public void deleteById(long ownerId, long id) throws UserNotFoundException {
         itemRepository.deleteById(ownerId, id);
+    }
+
+    @Override
+    public Collection<Item> searchItems(String text) {
+        return itemRepository.searchItems(text);
     }
 }

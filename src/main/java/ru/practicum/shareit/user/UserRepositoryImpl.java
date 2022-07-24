@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
 
 import java.util.*;
 
@@ -31,9 +32,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getById(long id) {
+    public User getById(long id) throws UserNotFoundException {
         User user = users.get(id);
-        if (user == null) throw new NoSuchElementException("No such userId in repo");
+        if (user == null) throw new UserNotFoundException("No such userId in repo");
         return user;
     }
 

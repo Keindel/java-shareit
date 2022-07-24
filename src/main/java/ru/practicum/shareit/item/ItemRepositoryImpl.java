@@ -2,33 +2,29 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements ItemRepository{
+public class ItemRepositoryImpl implements ItemRepository {
     private static long itemId = 0;
     private final Map<Long, Set<Item>> usersItems = new HashMap<>();
     private final UserRepository userRepository;
 
-    private void ifNoSuchUserIsPresentThrowEx(long userId) {
+    private void validateUserPresence(long userId) throws UserNotFoundException {
         userRepository.getById(userId);
     }
 
     @Override
-    public Item addItem(long ownerId, Item item) {
-        ifNoSuchUserIsPresentThrowEx(ownerId);
+    public Item addItem(long ownerId, Item item) throws UserNotFoundException {
+        validateUserPresence(ownerId);
         itemId++;
-        item.setItemId(itemId);
-//        List<Item> userItemsList = usersItems.get(ownerId);
-//        if (userItemsList == null) {
-//            userItemsList = new ArrayList<>();
-//        }
-//        userItemsList.add(item);
-//        usersItems.put(ownerId, userItemsList);
+        item.setId(itemId);
         usersItems.compute(ownerId, (userId, itemsList) -> {
             if (itemsList == null) {
                 itemsList = new HashSet<>();
@@ -40,38 +36,52 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public Collection<Item> getAllItemsOfOwner(long ownerId) {
-        ifNoSuchUserIsPresentThrowEx(ownerId);
+    public Collection<Item> getAllItemsOfOwner(long ownerId) throws UserNotFoundException {
+        validateUserPresence(ownerId);
         return usersItems.get(ownerId);
     }
 
     @Override
-    public Item getById(long ownerId, long id) {
-        ifNoSuchUserIsPresentThrowEx(ownerId);
-        return usersItems.get(ownerId).stream().filter(item -> item.getItemId() == id).findFirst().orElseThrow();
+    public Item getById(long id) throws ItemNotFoundException {
+        return usersItems.values().stream().flatMap(Collection::stream).filter(item -> item.getId() == id)
+                .findFirst()
+                .orElseThrow(ItemNotFoundException::new);
     }
 
     @Override
-    public Item updateItem(Item item, long ownerId, long itemId) {
+    public Item updateItem(Item item, long ownerId, long itemId) throws UserNotFoundException, ItemNotFoundException {
+        validateUserPresence(ownerId);
+        if (usersItems.get(ownerId) == null) {
+            throw new ItemNotFoundException("user does not have any items");
+        }
+        if (!usersItems.get(ownerId).contains(item)) {
+            throw new ItemNotFoundException("No such item in repo OR this item does not belong to specified owner");
+        }
         usersItems.computeIfPresent(ownerId, (userId, itemSet) -> {
             if (itemSet.remove(item)) {
                 itemSet.add(item);
-            } else {
-                throw new NoSuchElementException("No such item in repo OR this item does not belong to specified owner");
             }
             return itemSet;
         });
-        return null;
+        return getById(itemId);
     }
 
     @Override
-    public void deleteById(long ownerId, long id) {
-        ifNoSuchUserIsPresentThrowEx(ownerId);
-        usersItems.get(ownerId).remove(Item.builder().itemId(id).build());
+    public void deleteById(long ownerId, long id) throws UserNotFoundException {
+        validateUserPresence(ownerId);
+        usersItems.get(ownerId).remove(Item.builder().id(id).build());
+    }
+
+    @Override
+    public Collection<Item> searchItems(String text) {
+        if (text.isBlank()) {
+            return List.of();
+        }
+        return usersItems.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Item::getAvailable)
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .collect(Collectors.toList());
     }
 }
-
-/*
-* просмотр списка вещей
-* поиск вещи
-* */
