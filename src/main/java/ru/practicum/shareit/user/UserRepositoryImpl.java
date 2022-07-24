@@ -7,7 +7,7 @@ import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-    private static long userId = 0;
+    private long userId = 0;
     private final Map<Long, User> users = new HashMap<>();
 
     private void validateEmail(User user) {
