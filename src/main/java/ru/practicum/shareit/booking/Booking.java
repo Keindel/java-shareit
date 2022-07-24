@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.lang.NonNull;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDate;
 
@@ -13,14 +15,13 @@ import java.time.LocalDate;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Booking {
     @EqualsAndHashCode.Include
-    private long bookingId;
+    private long id;
     @NonNull
-    private LocalDate bookingStart;
+    private LocalDate start;
     @NonNull
-    private LocalDate bookingEnd;
-    private long itemId;
-    private long userId;
-    // TODO OwnerReaction.class for rejection/awaiting/approve?
-    private boolean approvedByOwner;
+    private LocalDate end;
+    private Item item;
+    private User booker;
+    private Status status;
 }
 

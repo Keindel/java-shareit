@@ -18,29 +18,30 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+    private final ItemDtoMapper itemDtoMapper;
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
                            @RequestBody @Valid Item item) throws UserNotFoundException {
-        return ItemDtoMapper.mapToDto(itemService.addItem(ownerId, item));
+        return itemDtoMapper.mapToDto(itemService.addItem(ownerId, item));
     }
 
     @GetMapping
     public Collection<ItemDto> getAllItemsOfOwner(@RequestHeader("X-Sharer-User-Id") long ownerId) throws UserNotFoundException {
         return itemService.getAllItemsOfOwner(ownerId).stream()
-                .map(ItemDtoMapper::mapToDto).collect(Collectors.toList());
+                .map(itemDtoMapper::mapToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getById(@PathVariable long itemId) throws UserNotFoundException, ItemNotFoundException {
-        return ItemDtoMapper.mapToDto(itemService.getById(itemId));
+        return itemDtoMapper.mapToDto(itemService.getById(itemId));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateById(@RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") long ownerId,
                               @PathVariable long itemId) throws UserNotFoundException, ItemNotFoundException {
-        return ItemDtoMapper.mapToDto(itemService.updateItem(itemDto, ownerId, itemId));
+        return itemDtoMapper.mapToDto(itemService.updateItem(itemDto, ownerId, itemId));
     }
 
     @DeleteMapping("/{itemId}")
@@ -52,6 +53,6 @@ public class ItemController {
     @GetMapping("/search")
     public Collection<ItemDto> searchItems(@RequestParam String text) {
         return itemService.searchItems(text).stream()
-                .map(ItemDtoMapper::mapToDto).collect(Collectors.toList());
+                .map(itemDtoMapper::mapToDto).collect(Collectors.toList());
     }
 }

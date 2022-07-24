@@ -1,10 +1,11 @@
 package ru.practicum.shareit.item.dto;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.Item;
 
-
+@Component
 public class ItemDtoMapper {
-    public static ItemDto mapToDto(Item item) {
+    public ItemDto mapToDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -14,7 +15,7 @@ public class ItemDtoMapper {
                 .build();
     }
 
-    public static Item mapToItem(ItemDto itemDto) {
+    public Item mapToItem(ItemDto itemDto) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())

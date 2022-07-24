@@ -17,25 +17,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserDtoMapper userDtoMapper;
 
     @PostMapping
     public UserDto addUser(@Valid @RequestBody User user) {
-        return UserDtoMapper.mapToDto(userService.addUser(user));
+        return userDtoMapper.mapToDto(userService.addUser(user));
     }
 
     @GetMapping
     public Collection<UserDto> getAll() {
-        return userService.getAll().stream().map(UserDtoMapper::mapToDto).collect(Collectors.toList());
+        return userService.getAll().stream().map(userDtoMapper::mapToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{userId}")
     public UserDto getById(@PathVariable long userId) throws UserNotFoundException {
-        return UserDtoMapper.mapToDto(userService.getById(userId));
+        return userDtoMapper.mapToDto(userService.getById(userId));
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateById(@PathVariable long userId, @RequestBody UserDto userDto) throws UserNotFoundException {
-        return UserDtoMapper.mapToDto(userService.updateById(userId, userDto));
+        return userDtoMapper.mapToDto(userService.updateById(userId, userDto));
     }
 
     @DeleteMapping("/{userId}")
