@@ -1,4 +1,4 @@
-package ru.practicum.shareit.review;
+package ru.practicum.shareit.comment;
 
 import lombok.*;
 import org.hibernate.Hibernate;
