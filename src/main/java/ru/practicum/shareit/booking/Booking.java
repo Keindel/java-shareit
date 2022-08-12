@@ -1,27 +1,54 @@
 package ru.practicum.shareit.booking;
 
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
-import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.user.User;
 
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Data
-@Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "entities")
+
 public class Booking {
-    @EqualsAndHashCode.Include
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NonNull
+    @Column(name = "start_date")
     private LocalDate start;
     @NonNull
+    @Column(name = "end_date")
     private LocalDate end;
-    private Item item;
-    private User booker;
+
+    @NonNull
+    @Column(name = "item_id")
+    private Long itemId;
+    @NonNull
+    @Column(name = "booker_id")
+    private Long bookerId;
+    @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Booking booking = (Booking) o;
+        return id != null && Objects.equals(id, booking.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
 

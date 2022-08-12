@@ -1,45 +1,42 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.review;
 
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    @Column(name = "user_name")
-    private String name;
+    @Size(max = 500)
+    @Column(name = "comment_text")
+    private String text;
     @NonNull
-    @Email
-    private String email;
-
-    @ElementCollection
-    @CollectionTable(name = "items", joinColumns = @JoinColumn(name = "owner_id"))
-    @Column(name = "id")
-    private List<Long> itemsIdsForSharing;
+    @Column(name = "item_id")
+    private Long itemId;
+    @NonNull
+    @Column(name = "author_id")
+    private Long authorId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
-        return id != null && Objects.equals(id, user.id);
+        Comment comment = (Comment) o;
+        return id != null && Objects.equals(id, comment.id);
     }
 
     @Override

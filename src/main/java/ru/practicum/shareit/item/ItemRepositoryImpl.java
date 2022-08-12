@@ -69,7 +69,9 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public void deleteById(long ownerId, long id) throws UserNotFoundException {
         validateUserPresence(ownerId);
-        usersItems.get(ownerId).remove(Item.builder().id(id).build());
+        Item itemToDelete = new Item();
+        itemToDelete.setId(id);
+        usersItems.get(ownerId).remove(itemToDelete);
     }
 
     @Override
