@@ -15,7 +15,7 @@ public interface ItemService {
 
     Item updateItem(ItemDto itemDto, long ownerId, long itemId) throws UserNotFoundException, ItemNotFoundException;
 
-    void deleteById(long ownerId, long id) throws UserNotFoundException;
+    void deleteById(long ownerId, long id) throws UserNotFoundException, ItemNotFoundException;
 
     Collection<Item> searchItems(String text);
 }
