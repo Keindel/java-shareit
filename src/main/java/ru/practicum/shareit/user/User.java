@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
+import ru.practicum.shareit.item.Item;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -29,10 +30,14 @@ public class User {
     @Email
     private String email;
 
-    @ElementCollection
-    @CollectionTable(name = "items", joinColumns = @JoinColumn(name = "owner_id"))
-    @Column(name = "id")
-    private List<Long> itemsIdsForSharing;
+//    @ElementCollection
+//    @CollectionTable(name = "items", joinColumns = @JoinColumn(name = "owner_id"))
+//    @Column(name = "id")
+//    private List<Long> itemsIdsForSharing;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    @ToString.Exclude
+    private List<Item> itemsForSharing;
 
     @Override
     public boolean equals(Object o) {

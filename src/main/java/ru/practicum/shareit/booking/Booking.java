@@ -16,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "entities")
+@Table(name = "bookings")
 
 public class Booking {
     @Id

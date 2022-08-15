@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
+import ru.practicum.shareit.booking.Booking;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -38,10 +39,13 @@ public class Item {
     @Column(name = "request_id")
     private Long requestId;
 
-    @ElementCollection
-    @CollectionTable(name = "bookings", joinColumns = @JoinColumn(name = "item_id"))
-    @Column(name = "id")
-    private List<Long> bookingsIds;
+//    @ElementCollection
+//    @CollectionTable(name = "bookings", joinColumns = @JoinColumn(name = "item_id"))
+//    @Column(name = "id")
+//    private List<Long> bookingsIds;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private List<Booking> bookings;
 
     @Override
     public boolean equals(Object o) {

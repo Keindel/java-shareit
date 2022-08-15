@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 
@@ -12,6 +13,23 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Collection<Item> findAllByOwnerId(long ownerId) throws UserNotFoundException;
     Collection<Item> findByNameContainingIgnoreCase(String text);
     Collection<Item> findByDescriptionContainingIgnoreCase(String text);
+
+    @Query("SELECT it FROM Item it " +
+            "WHERE it.available=true " +
+            "AND (LOWER(it.name) LIKE LOWER(CONCAT('%', :text, '%') ) " +
+            "OR LOWER(it.description) LIKE LOWER(concat('%', :text, '%') ))")
+//    @Query(" select i from Item i " +
+//            "where upper(i.name) like upper(concat('%', ?1, '%')) " +
+//            " or upper(i.description) like upper(concat('%', ?1, '%'))")
+    Collection<Item> searchItems(String text);
+    /*
+        return usersItems.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Item::getAvailable)
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .collect(Collectors.toList());
+      */
 //
 //    Item getById(long id) throws ItemNotFoundException;
 //

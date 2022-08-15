@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.UserRepository;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -81,10 +82,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Collection<Item> searchItems(String text) {
-        Set<Item> foundItems = new HashSet<>();
-        // TODO enhance implementation with (JPQL or) QueryDSL
-        foundItems.addAll(itemRepository.findByNameContainingIgnoreCase(text));
-        foundItems.addAll(itemRepository.findByDescriptionContainingIgnoreCase(text));
-        return foundItems;
+        if (text.isBlank()) {
+            return List.of();
+        }
+//        Set<Item> foundItems = new HashSet<>();
+//        foundItems.addAll(itemRepository.findByNameContainingIgnoreCase(text));
+//        foundItems.addAll(itemRepository.findByDescriptionContainingIgnoreCase(text));
+//        return foundItems;
+        return itemRepository.searchItems(text);
     }
 }
