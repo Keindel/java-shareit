@@ -6,7 +6,9 @@ import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -23,11 +25,13 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NonNull
+    @Future
     @Column(name = "start_date")
-    private LocalDate start;
+    private LocalDateTime start;
     @NonNull
+    @Future
     @Column(name = "end_date")
-    private LocalDate end;
+    private LocalDateTime end;
 
     @NonNull
     @Column(name = "item_id")

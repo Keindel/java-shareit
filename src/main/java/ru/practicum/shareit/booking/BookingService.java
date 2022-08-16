@@ -1,10 +1,6 @@
 package ru.practicum.shareit.booking;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.exceptions.BookingNotFoundException;
 import ru.practicum.shareit.exceptions.BookingValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
@@ -12,48 +8,15 @@ import ru.practicum.shareit.exceptions.UserNotFoundException;
 
 import java.util.Collection;
 
-@Slf4j
-@RestController
-@RequestMapping(path = "/bookings")
-@RequiredArgsConstructor
-public class BookingController {
-
-    private final BookingService bookingService;
-    private final BookingDtoMapper bookingDtoMapper;
-
-    @PostMapping
-    public BookingDto makeBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                  @RequestBody BookingDto bookingDto) throws BookingValidationException, ItemNotFoundException, UserNotFoundException {
-        return bookingDtoMapper.mapToDto(bookingService.makeBooking(userId,
-                bookingDtoMapper.mapToBooking(bookingDto)));
-    }
-
-    @PatchMapping("/{bookingId}?approved={approved}")
-    public BookingDto updateStatus(@RequestHeader("X-Sharer-User-Id") long userId,
-                                   @PathVariable long bookingId,
-                                   @RequestParam boolean approved) throws BookingNotFoundException, BookingValidationException, ItemNotFoundException, UserNotFoundException {
-        return bookingDtoMapper.mapToDto(bookingService.updateStatus(userId, bookingId, approved));
-    }
-
-    @GetMapping("/{bookingId}")
-    public BookingDto getById(@RequestHeader("X-Sharer-User-Id") long userId,
-                              @PathVariable long bookingId) throws BookingNotFoundException, BookingValidationException, ItemNotFoundException, UserNotFoundException {
-        return bookingDtoMapper.mapToDto(bookingService.getById(userId, bookingId));
-    }
-
-    @GetMapping
-    // TODO State - String?
-    public Collection<BookingDto> getAllByBookerId(@RequestHeader("X-Sharer-User-Id") long bookerId,
-                                                 @RequestParam(required = false, defaultValue = "All") State state) throws UserNotFoundException, BookingValidationException {
-        return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByBookerId(bookerId, state));
-    }
-
-    @GetMapping("/owner")
-    public Collection<BookingDto> getAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                                  @RequestParam(required = false, defaultValue = "All") State state) {
-        return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByOwnerId(ownerId, state));
-    }
+public interface BookingService {
+    Booking makeBooking(long userId, Booking booking) throws ItemNotFoundException, BookingValidationException, UserNotFoundException;
+    Booking updateStatus(long userId, long bookingId, boolean approved) throws BookingNotFoundException, ItemNotFoundException, BookingValidationException, UserNotFoundException;
+    Booking getById(long userId, long bookingId) throws ItemNotFoundException, BookingNotFoundException, BookingValidationException, UserNotFoundException;
+    Collection<Booking> getAllByBookerId(long bookerId, State state) throws UserNotFoundException, BookingValidationException;
+    Collection<Booking> getAllByOwnerId(long ownerId, State state);
 }
+
+
 /*Добавление нового запроса на бронирование. Запрос может быть создан любым пользователем,
  *  а затем подтверждён владельцем вещи. Эндпоинт — POST /bookings. После создания запрос находится
  *  в статусе WAITING — «ожидает подтверждения».
