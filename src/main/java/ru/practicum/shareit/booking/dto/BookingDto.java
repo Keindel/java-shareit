@@ -4,8 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.practicum.shareit.booking.Status;
-
-import java.time.LocalDateTime;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
 @Data
 @Builder
@@ -14,7 +14,7 @@ public class BookingDto {
     private Long id;
     private String start;
     private String end;
-    private Long itemId;
-    private Long bookerId;
+    private Item item;
+    private User booker;
     private Status status;
 }

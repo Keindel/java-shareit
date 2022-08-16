@@ -17,8 +17,8 @@ public class BookingDtoMapper {
                 .id(booking.getId())
                 .start(formatter.format(booking.getStart()))
                 .end(formatter.format(booking.getEnd()))
-                .itemId(booking.getItemId())
-                .bookerId(booking.getBookerId())
+                .item(booking.getItem())
+                .booker(booking.getBooker())
                 .status(booking.getStatus())
                 .build();
     }
@@ -28,7 +28,7 @@ public class BookingDtoMapper {
         booking.setId(bookingDto.getId());
         booking.setStart(LocalDateTime.parse(bookingDto.getStart(), formatter));
         booking.setEnd(LocalDateTime.parse(bookingDto.getEnd(), formatter));
-        booking.setItemId(bookingDto.getItemId());
+        booking.setItem(bookingDto.getItem());
         booking.setStatus(bookingDto.getStatus());
         return booking;
     }

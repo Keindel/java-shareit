@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -31,13 +33,15 @@ public class Item {
     @Size(max = 500)
     private String description;
     @NonNull
-    @Column(name = "owner_id")
-    private Long ownerId;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
     @NonNull
     private Boolean available;
 
-    @Column(name = "request_id")
-    private Long requestId;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
 //    @ElementCollection
 //    @CollectionTable(name = "bookings", joinColumns = @JoinColumn(name = "item_id"))

@@ -4,10 +4,11 @@ package ru.practicum.shareit.booking;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -34,11 +35,13 @@ public class Booking {
     private LocalDateTime end;
 
     @NonNull
-    @Column(name = "item_id")
-    private Long itemId;
+    @ManyToOne//(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JoinColumn(name = "item_id")
+    private Item item;
     @NonNull
-    @Column(name = "booker_id")
-    private Long bookerId;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "booker_id")
+    private User booker;
     @Enumerated(EnumType.STRING)
     private Status status;
 

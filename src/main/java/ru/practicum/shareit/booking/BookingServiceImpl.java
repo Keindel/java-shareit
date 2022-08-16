@@ -10,11 +10,15 @@ import ru.practicum.shareit.exceptions.BookingNotFoundException;
 import ru.practicum.shareit.exceptions.BookingValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,10 +86,10 @@ public class BookingServiceImpl implements BookingService {
     public Collection<Booking> getAllByBookerId(long bookerId, State state)
             throws UserNotFoundException, BookingValidationException {
         validateUserPresence(bookerId);
-        if (state == State.ALL) {
-            return bookingRepository.findAllByBookerId(bookerId);
-        }
         Sort sort = Sort.sort(Booking.class).by(Booking::getStart).descending();
+        if (state == State.ALL) {
+            return bookingRepository.findAllByBookerId(bookerId, sort);
+        }
         switch (state) {
             case PAST:
                 return bookingRepository.findAllByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now(), sort);
@@ -107,8 +111,35 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<Booking> getAllByOwnerId(long ownerId, State state) {
-        return null;
+    public Collection<Booking> getAllByOwnerId(long ownerId, State state) throws UserNotFoundException, BookingValidationException {
+        User owner = userRepository.findById(ownerId).orElseThrow(UserNotFoundException::new);
+//        List<Item> ownerItems = owner.getItemsForSharing();
+//        if (ownerItems.isEmpty()) {
+//            return List.of();
+//        }
+        if (state == State.ALL) {
+            return bookingRepository.findAllByOwnerId(ownerId);
+        }
+        switch (state) {
+            case PAST:
+                return bookingRepository.findAllByOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now());
+            case CURRENT:
+                LocalDateTime now = LocalDateTime.now();
+                return bookingRepository.findAllByOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId, now);
+            case FUTURE:
+                return bookingRepository.findAllByOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now());
+            case WAITING:
+                //TODO Status as String?
+                return bookingRepository.findAllByOwnerIdAndStatusEquals(ownerId, Status.WAITING);
+            case REJECTED:
+                //TODO Status as String?
+                return bookingRepository.findAllByOwnerIdAndStatusEquals(ownerId, Status.REJECTED);
+            default:
+                throw new BookingValidationException("invalid booking state request");
+        }
+//        return ownerItems.stream().map(Item::getBookings)
+//                .flatMap(Collection::stream)
+//                .collect(Collectors.toList());
     }
 }
 /*Добавление нового запроса на бронирование. Запрос может быть создан любым пользователем,

@@ -29,11 +29,6 @@ public class User {
     @NonNull
     @Email
     private String email;
-
-//    @ElementCollection
-//    @CollectionTable(name = "items", joinColumns = @JoinColumn(name = "owner_id"))
-//    @Column(name = "id")
-//    private List<Long> itemsIdsForSharing;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     @ToString.Exclude
