@@ -12,6 +12,8 @@ import ru.practicum.shareit.exceptions.CommentValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.comment.CommentDtoMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
@@ -35,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ItemDtoMapper itemDtoMapper;
+    private final CommentDtoMapper commentDtoMapper;
 
     @Override
     public Item addItem(long ownerId, Item item) throws UserNotFoundException {
@@ -119,7 +122,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.searchItems(text);
     }
 
-    public Comment addComment(long itemId, String text, long userId)
+    public CommentDto addComment(long itemId, CommentDto commentDto, long userId)
             throws ItemNotFoundException, UserNotFoundException, CommentValidationException {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -132,9 +135,9 @@ public class ItemServiceImpl implements ItemService {
         }
         Comment comment = new Comment();
         comment.setItem(item);
-        comment.setText(text);
+        comment.setText(commentDto.getText());
         comment.setAuthor(user);
         comment.setCreated(LocalDateTime.now());
-        return commentRepository.save(comment);
+        return commentDtoMapper.toDto(commentRepository.save(comment));
     }
 }

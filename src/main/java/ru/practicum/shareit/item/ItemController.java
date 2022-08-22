@@ -7,6 +7,7 @@ import ru.practicum.shareit.exceptions.CommentValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.ItemWithNearestBookingsDto;
@@ -62,10 +63,10 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public Comment addComment(@PathVariable long itemId,
-                              @RequestBody String text,
-                              @RequestHeader("X-Sharer-User-Id") long userId)
+    public CommentDto addComment(@PathVariable long itemId,
+                                 @RequestBody CommentDto commentDto,
+                                 @RequestHeader("X-Sharer-User-Id") long userId)
             throws UserNotFoundException, CommentValidationException, ItemNotFoundException {
-        return itemService.addComment(itemId, text, userId);
+        return (itemService.addComment(itemId, commentDto, userId));
     }
 }
