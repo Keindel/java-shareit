@@ -24,7 +24,8 @@ public class ErrorHandler {
         return Map.of("error: ", "object not found");
     }
 
-    @ExceptionHandler({BookingValidationException.class})
+    @ExceptionHandler({BookingValidationException.class,
+            CommentValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleBadRequest(final Exception e) {
         return Map.of("error: ", "check your request");

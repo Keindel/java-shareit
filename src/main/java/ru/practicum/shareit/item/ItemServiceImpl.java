@@ -4,15 +4,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.exceptions.CommentValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoMapper;
+import ru.practicum.shareit.item.dto.ItemWithNearestBookingsDto;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,26 +32,40 @@ import java.util.Set;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
+    private final ItemDtoMapper itemDtoMapper;
 
     @Override
     public Item addItem(long ownerId, Item item) throws UserNotFoundException {
-        if (!userRepository.existsById(ownerId)) {
-            throw new UserNotFoundException();
-        }
-        item.setOwnerId(ownerId);
+        User owner = userRepository.findById(ownerId).orElseThrow(UserNotFoundException::new);
+        item.setOwner(owner);
         return itemRepository.save(item);
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<Item> getAllItemsOfOwner(long ownerId) throws UserNotFoundException {
-        return itemRepository.findAllByOwnerId(ownerId);
+    public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(long ownerId) throws UserNotFoundException {
+        LocalDateTime now = LocalDateTime.now();
+
+        return itemRepository.findAllByOwnerId(ownerId).stream().map(item ->
+                ItemWithNearestBookingsDto.builder()
+                        .id(item.getId())
+                        .name(item.getName())
+                        .available(item.getAvailable())
+                        .description(item.getDescription())
+                        .lastBooking(bookingRepository.getFirstByItemIdAndStartIsBeforeOrderByStartDesc(item.getId(), now))
+                        .nextBooking(bookingRepository.getFirstByItemIdAndStartIsAfterOrderByStartAsc(item.getId(), now))
+                        .comments(commentRepository.findAllByItemId(item.getId()))
+                        .build()).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public Item getById(long id) throws ItemNotFoundException {
-        return itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+    public ItemDto getById(long id) throws ItemNotFoundException {
+        ItemDto itemDto = itemDtoMapper.mapToDto(itemRepository.findById(id).orElseThrow(ItemNotFoundException::new));
+        itemDto.setComments(commentRepository.findAllByItemId(id));
+        return itemDto;
     }
 
     @Override
@@ -68,7 +94,8 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(propagation = Propagation.MANDATORY)
     void validateItemBelonging(long ownerId, long itemId) throws UserNotFoundException, ItemNotFoundException {
         if (!userRepository.findById(ownerId).orElseThrow(UserNotFoundException::new)
-                .getItemsIdsForSharing().contains(itemId)) {
+                .getItemsForSharing()
+                .contains(itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new))) {
             throw new ItemNotFoundException("item does not belong to this user");
         }
     }
@@ -90,5 +117,24 @@ public class ItemServiceImpl implements ItemService {
 //        foundItems.addAll(itemRepository.findByDescriptionContainingIgnoreCase(text));
 //        return foundItems;
         return itemRepository.searchItems(text);
+    }
+
+    public Comment addComment(long itemId, String text, long userId)
+            throws ItemNotFoundException, UserNotFoundException, CommentValidationException {
+        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Optional<Booking> firstBookingByTheUser = item.getBookings().stream()
+                .filter(booking -> booking.getBooker().equals(user)).min(Comparator.comparing(Booking::getEnd));
+        if (firstBookingByTheUser.isEmpty()) {
+            throw new CommentValidationException("current User had NOT BOOKED this item yet");
+        } else if (firstBookingByTheUser.get().getEnd().isAfter(LocalDateTime.now())) {
+            throw new CommentValidationException("current User had NOT COMPLETED BOOKING yet");
+        }
+        Comment comment = new Comment();
+        comment.setItem(item);
+        comment.setText(text);
+        comment.setAuthor(user);
+        comment.setCreated(LocalDateTime.now());
+        return commentRepository.save(comment);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findAllByBookerId(long bookerId, Sort sort);
@@ -25,7 +26,25 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                          Status status,
                                                          Sort sort);
 
-    Collection<Booking> findAllByItemOwnerIdAnd(long ownerId);
+    Collection<Booking> findAllByItemOwnerId(long ownerId, Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndEndIsBefore(long ownerId, LocalDateTime end, Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(long ownerId,
+                                                                          LocalDateTime start,
+                                                                          LocalDateTime end,
+                                                                          Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndStartIsAfter(long ownerId,
+                                                            LocalDateTime start,
+                                                            Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndStatusEquals(long ownerId,
+                                                            Status status,
+                                                            Sort sort);
+
+    Booking getFirstByItemIdAndStartIsBeforeOrderByStartDesc(long itemId, LocalDateTime start);
+    Booking getFirstByItemIdAndStartIsAfterOrderByStartAsc(long itemId, LocalDateTime start);
 
 //    @Query("SELECT boo FROM Booking boo " +
 //            "JOIN Item on boo.itemId=Item.id " +

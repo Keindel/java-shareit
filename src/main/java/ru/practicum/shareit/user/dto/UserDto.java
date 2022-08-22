@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserDto {
+    @EqualsAndHashCode.Include
     private long id;
     private String name;
     private String email;

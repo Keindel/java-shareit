@@ -3,10 +3,13 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exceptions.CommentValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
+import ru.practicum.shareit.item.dto.ItemWithNearestBookingsDto;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -27,14 +30,16 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> getAllItemsOfOwner(@RequestHeader("X-Sharer-User-Id") long ownerId) throws UserNotFoundException {
-        return itemService.getAllItemsOfOwner(ownerId).stream()
-                .map(itemDtoMapper::mapToDto).collect(Collectors.toList());
+    public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(@RequestHeader("X-Sharer-User-Id") long ownerId)
+            throws UserNotFoundException {
+        return itemService.getAllItemsOfOwner(ownerId);
     }
+    /*Отзывы можно будет увидеть по двум эндпоинтам — по GET /items/{itemId} для одной конкретной вещи
+     и по GET /items для всех вещей данного пользователя.*/
 
     @GetMapping("/{itemId}")
     public ItemDto getById(@PathVariable long itemId) throws UserNotFoundException, ItemNotFoundException {
-        return itemDtoMapper.mapToDto(itemService.getById(itemId));
+        return itemService.getById(itemId);
     }
 
     @PatchMapping("/{itemId}")
@@ -46,7 +51,7 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     public void deleteById(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                           @PathVariable long itemId) throws UserNotFoundException {
+                           @PathVariable long itemId) throws UserNotFoundException, ItemNotFoundException {
         itemService.deleteById(ownerId, itemId);
     }
 
@@ -54,5 +59,13 @@ public class ItemController {
     public Collection<ItemDto> searchItems(@RequestParam String text) {
         return itemService.searchItems(text).stream()
                 .map(itemDtoMapper::mapToDto).collect(Collectors.toList());
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public Comment addComment(@PathVariable long itemId,
+                              @RequestBody String text,
+                              @RequestHeader("X-Sharer-User-Id") long userId)
+            throws UserNotFoundException, CommentValidationException, ItemNotFoundException {
+        return itemService.addComment(itemId, text, userId);
     }
 }

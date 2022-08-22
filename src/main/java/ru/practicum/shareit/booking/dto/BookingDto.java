@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.User;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookingDto {
+    @EqualsAndHashCode.Include
     private Long id;
     private String start;
     private String end;
