@@ -38,5 +38,6 @@ CREATE TABLE IF NOT EXISTS comments
     id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     comment_text      varchar(200) NOT NULL,
     item_id   BIGINT REFERENCES items (id) ON DELETE CASCADE,
-    author_id BIGINT REFERENCES users (id) ON DELETE CASCADE
+    author_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
+    created   TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

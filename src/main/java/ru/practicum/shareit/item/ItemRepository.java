@@ -18,9 +18,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "WHERE it.available=true " +
             "AND (LOWER(it.name) LIKE LOWER(CONCAT('%', :text, '%') ) " +
             "OR LOWER(it.description) LIKE LOWER(concat('%', :text, '%') ))")
-//    @Query(" select i from Item i " +
-//            "where upper(i.name) like upper(concat('%', ?1, '%')) " +
-//            " or upper(i.description) like upper(concat('%', ?1, '%'))")
     Collection<Item> searchItems(String text);
     /*
         return usersItems.values().stream()

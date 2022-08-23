@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -29,26 +29,25 @@ public class Item {
     @Size(max = 50)
     @Column(name = "item_name")
     private String name;
-    @NonNull
+    @NotBlank
     @Size(max = 500)
     private String description;
     @NonNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @ToString.Exclude
     private User owner;
-    @NonNull
+    @NotNull
     private Boolean available;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
+    @ToString.Exclude
     private ItemRequest request;
 
-//    @ElementCollection
-//    @CollectionTable(name = "bookings", joinColumns = @JoinColumn(name = "item_id"))
-//    @Column(name = "id")
-//    private List<Long> bookingsIds;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
+    @ToString.Exclude
     private List<Booking> bookings;
 
     @Override

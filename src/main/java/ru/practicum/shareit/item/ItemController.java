@@ -26,7 +26,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                           @RequestBody @Valid Item item) throws UserNotFoundException {
+                           @Valid @RequestBody Item item) throws UserNotFoundException {
         return itemDtoMapper.mapToDto(itemService.addItem(ownerId, item));
     }
 
@@ -35,8 +35,6 @@ public class ItemController {
             throws UserNotFoundException {
         return itemService.getAllItemsOfOwner(ownerId);
     }
-    /*Отзывы можно будет увидеть по двум эндпоинтам — по GET /items/{itemId} для одной конкретной вещи
-     и по GET /items для всех вещей данного пользователя.*/
 
     @GetMapping("/{itemId}")
     public ItemDto getById(@PathVariable long itemId) throws UserNotFoundException, ItemNotFoundException {

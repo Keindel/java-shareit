@@ -5,10 +5,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingDtoMapper;
+import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.exceptions.BookingNotFoundException;
 import ru.practicum.shareit.exceptions.BookingValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -23,17 +26,26 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
+    private final BookingDtoMapper bookingDtoMapper;
+
     @Override
-    public Booking makeBooking(long userId, Booking booking)
+    public Booking makeBooking(long userId, BookingInputDto bookingInputDto)
             throws ItemNotFoundException, BookingValidationException, UserNotFoundException {
         validateUserPresenceById(userId);
-        if (itemRepository.findById(booking.getItem().getId()).orElseThrow(ItemNotFoundException::new)
-                .getOwner().getId() == userId) {
+        Item item = itemRepository.findById(bookingInputDto.getItemId()).orElseThrow(ItemNotFoundException::new);
+        if (item.getOwner().getId() == userId) {
             throw new BookingValidationException("you can't book your own item");
         }
+        if (item.getAvailable().equals(false)) {
+            throw new BookingValidationException("item is unavailable for booking");
+        }
+        Booking booking = bookingDtoMapper.mapToBooking(bookingInputDto);
         booking.setBooker(userRepository.findById(userId).orElseThrow(UserNotFoundException::new));
+        booking.setItem(item);
         booking.setStatus(Status.WAITING);
-        return bookingRepository.save(booking);
+
+        booking = bookingRepository.save(booking);
+        return booking;
     }
 
     private void validateUserPresenceById(long userId) throws UserNotFoundException {
@@ -133,33 +145,5 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new BookingValidationException("invalid booking state request");
         }
-//        return ownerItems.stream().map(Item::getBookings)
-//                .flatMap(Collection::stream)
-//                .collect(Collectors.toList());
     }
 }
-/*Добавление нового запроса на бронирование. Запрос может быть создан любым пользователем,
- *  а затем подтверждён владельцем вещи. Эндпоинт — POST /bookings. После создания запрос находится
- *  в статусе WAITING — «ожидает подтверждения».
-
- * Подтверждение или отклонение запроса на бронирование. Может быть выполнено только владельцем вещи.
- *  Затем статус бронирования становится либо APPROVED, либо REJECTED.
- *  Эндпоинт — PATCH /bookings/{bookingId}?approved={approved},
- *  параметр approved может принимать значения true или false.
-
- * Получение данных о конкретном бронировании (включая его статус).
- *  Может быть выполнено либо автором бронирования, либо владельцем вещи,
- *  к которой относится бронирование. Эндпоинт — GET /bookings/{bookingId}.
-
- * Получение списка всех бронирований текущего пользователя.
- *  Эндпоинт — GET /bookings?state={state}.
- *  Параметр state необязательный и по умолчанию равен ALL (англ. «все»).
- *  Также он может принимать значения CURRENT (англ. «текущие»), **PAST** (англ. «завершённые»),
- *  FUTURE (англ. «будущие»), WAITING (англ. «ожидающие подтверждения»),
- *  REJECTED (англ. «отклонённые»).
- *  Бронирования должны возвращаться отсортированными по дате от более новых к более старым.
-
- * Получение списка бронирований для всех вещей текущего пользователя.
- *  Эндпоинт — GET /bookings/owner?state={state}.
- *  Этот запрос имеет смысл для владельца хотя бы одной вещи.
- *  Работа параметра state аналогична его работе в предыдущем сценарии.*/

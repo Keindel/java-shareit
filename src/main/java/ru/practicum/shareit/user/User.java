@@ -14,7 +14,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,7 +25,7 @@ public class User {
     @NotBlank
     @Column(name = "user_name")
     private String name;
-    @NonNull
+    @NotBlank
     @Email
     private String email;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
