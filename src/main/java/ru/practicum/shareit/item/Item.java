@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;

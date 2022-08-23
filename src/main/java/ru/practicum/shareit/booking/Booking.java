@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
