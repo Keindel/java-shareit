@@ -24,6 +24,13 @@ public class BookingDtoMapper {
                 .build();
     }
 
+    public BookingBookerIdDto mapToBookerIdDto(Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+        return new BookingBookerIdDto(booking.getId(), booking.getBooker().getId());
+    }
+
     public Booking mapToBooking(BookingInputDto bookingInputDto) {
         Booking booking = new Booking();
 //        booking.setId(bookingInputDto.getId());

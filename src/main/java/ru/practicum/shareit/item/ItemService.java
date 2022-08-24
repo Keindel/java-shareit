@@ -15,7 +15,7 @@ public interface ItemService {
 
     Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(long ownerId) throws UserNotFoundException;
 
-    ItemDto getById(long id) throws ItemNotFoundException;
+    ItemWithNearestBookingsDto getById(long id, long userId) throws ItemNotFoundException;
 
     Item updateItem(ItemDto itemDto, long ownerId, long itemId) throws UserNotFoundException, ItemNotFoundException;
 

@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 
 import java.util.Collection;
@@ -10,7 +9,7 @@ import java.util.Collection;
 public interface ItemRepository extends JpaRepository<Item, Long> {
 //    Item addItem(long ownerId, Item item) throws UserNotFoundException;
 //
-    Collection<Item> findAllByOwnerId(long ownerId) throws UserNotFoundException;
+    Collection<Item> findAllByOwnerIdOrderByIdAsc(long ownerId) throws UserNotFoundException;
     Collection<Item> findByNameContainingIgnoreCase(String text);
     Collection<Item> findByDescriptionContainingIgnoreCase(String text);
 

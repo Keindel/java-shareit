@@ -4,7 +4,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.dto.BookingBookerIdDto;
 import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,8 +21,8 @@ public class ItemWithNearestBookingsDto {
     private String description;
     private Boolean available;
 
-    private Booking lastBooking;
-    private Booking nextBooking;
+    private BookingBookerIdDto lastBooking;
+    private BookingBookerIdDto nextBooking;
 
-    private List<Comment> comments;
+    private List<CommentDto> comments;
 }

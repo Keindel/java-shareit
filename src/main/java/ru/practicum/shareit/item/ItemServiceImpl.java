@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.exceptions.CommentValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
@@ -38,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
     private final ItemDtoMapper itemDtoMapper;
     private final CommentDtoMapper commentDtoMapper;
+    private final BookingDtoMapper bookingDtoMapper;
 
     @Override
     public Item addItem(long ownerId, Item item) throws UserNotFoundException {
@@ -51,24 +51,43 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(long ownerId) throws UserNotFoundException {
         LocalDateTime now = LocalDateTime.now();
 
-        return itemRepository.findAllByOwnerId(ownerId).stream().map(item ->
+        return itemRepository.findAllByOwnerIdOrderByIdAsc(ownerId).stream().map(item ->
                 ItemWithNearestBookingsDto.builder()
                         .id(item.getId())
                         .name(item.getName())
                         .available(item.getAvailable())
                         .description(item.getDescription())
-                        .lastBooking(bookingRepository.getFirstByItemIdAndStartIsBeforeOrderByStartDesc(item.getId(), now))
-                        .nextBooking(bookingRepository.getFirstByItemIdAndStartIsAfterOrderByStartAsc(item.getId(), now))
-                        .comments(commentRepository.findAllByItemId(item.getId()))
+                        .lastBooking(bookingDtoMapper.mapToBookerIdDto(bookingRepository
+                                .getFirstByItemIdAndStartIsBeforeOrderByStartDesc(item.getId(), now)))
+                        .nextBooking(bookingDtoMapper.mapToBookerIdDto(bookingRepository
+                                .getFirstByItemIdAndStartIsAfterOrderByStartAsc(item.getId(), now)))
+                        .comments((commentRepository.findAllByItemId(item.getId()))
+                                .stream().map(commentDtoMapper::toDto).collect(Collectors.toList()))
                         .build()).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public ItemDto getById(long id) throws ItemNotFoundException {
-        ItemDto itemDto = itemDtoMapper.mapToDto(itemRepository.findById(id).orElseThrow(ItemNotFoundException::new));
-        itemDto.setComments(commentRepository.findAllByItemId(id));
-        return itemDto;
+    public ItemWithNearestBookingsDto getById(long id, long userId) throws ItemNotFoundException {
+        LocalDateTime now = LocalDateTime.now();
+
+        Item item = itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+        ItemWithNearestBookingsDto itemWithNearestBookingsDto = ItemWithNearestBookingsDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .available(item.getAvailable())
+                .description(item.getDescription())
+                .comments((commentRepository.findAllByItemId(item.getId()))
+                        .stream().map(commentDtoMapper::toDto).collect(Collectors.toList()))
+                .build();
+        if (item.getOwner().getId() != userId) {
+            return itemWithNearestBookingsDto;
+        }
+        itemWithNearestBookingsDto.setLastBooking(bookingDtoMapper.mapToBookerIdDto(bookingRepository
+                .getFirstByItemIdAndStartIsBeforeOrderByStartDesc(item.getId(), now)));
+        itemWithNearestBookingsDto.setNextBooking(bookingDtoMapper.mapToBookerIdDto(bookingRepository
+                .getFirstByItemIdAndStartIsAfterOrderByStartAsc(item.getId(), now)));
+        return itemWithNearestBookingsDto;
     }
 
     @Override

@@ -37,8 +37,10 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getById(@PathVariable long itemId) throws UserNotFoundException, ItemNotFoundException {
-        return itemService.getById(itemId);
+    public ItemWithNearestBookingsDto getById(@PathVariable long itemId,
+                                              @RequestHeader("X-Sharer-User-Id") long userId)
+            throws UserNotFoundException, ItemNotFoundException {
+        return itemService.getById(itemId, userId);
     }
 
     @PatchMapping("/{itemId}")
@@ -62,7 +64,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable long itemId,
-                                 @RequestBody CommentDto commentDto,
+                                 @Valid @RequestBody CommentDto commentDto,
                                  @RequestHeader("X-Sharer-User-Id") long userId)
             throws UserNotFoundException, CommentValidationException, ItemNotFoundException {
         return (itemService.addComment(itemId, commentDto, userId));
