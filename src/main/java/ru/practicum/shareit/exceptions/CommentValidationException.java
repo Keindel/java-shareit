@@ -1,6 +1,6 @@
 package ru.practicum.shareit.exceptions;
 
-public class CommentValidationException extends Exception{
+public class CommentValidationException extends Exception {
     public CommentValidationException() {
     }
 

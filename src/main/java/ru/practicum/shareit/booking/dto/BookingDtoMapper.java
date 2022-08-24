@@ -34,7 +34,7 @@ public class BookingDtoMapper {
         return booking;
     }
 
-    public Collection<BookingOutputDto> mapToDtoCollection(Collection<Booking> bookings){
+    public Collection<BookingOutputDto> mapToDtoCollection(Collection<Booking> bookings) {
         return bookings.stream().map(this::mapToOutputDto).collect(Collectors.toList());
     }
 }
