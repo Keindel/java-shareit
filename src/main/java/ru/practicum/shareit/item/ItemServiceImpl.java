@@ -95,9 +95,6 @@ public class ItemServiceImpl implements ItemService {
         Item itemFromRepo = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         validateItemBelonging(ownerId, itemId);
 
-//        Item itemFromRepoCopy = new Item(itemFromRepo.getId(), itemFromRepo.getName(),
-//                itemFromRepo.getDescription(), itemFromRepo.getOwnerId(),
-//                itemFromRepo.getAvailable(), itemFromRepo.getRequestId(), itemFromRepo.getBookingsIds());
         String nameUpdate = itemDto.getName();
         String descriptionUpdate = itemDto.getDescription();
         Boolean availabilityUpdate = itemDto.getAvailable();
@@ -134,10 +131,6 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return List.of();
         }
-//        Set<Item> foundItems = new HashSet<>();
-//        foundItems.addAll(itemRepository.findByNameContainingIgnoreCase(text));
-//        foundItems.addAll(itemRepository.findByDescriptionContainingIgnoreCase(text));
-//        return foundItems;
         return itemRepository.searchItems(text);
     }
 

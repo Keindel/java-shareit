@@ -31,7 +31,6 @@ public class BookingServiceImpl implements BookingService {
         validateUserPresenceById(userId);
         Item item = itemRepository.findById(bookingInputDto.getItemId()).orElseThrow(ItemNotFoundException::new);
         if (item.getOwner().getId() == userId) {
-//            throw new BookingValidationException("you can't book your own item");
             throw new BookingNotFoundException("you can't book your own item");
         }
         if (item.getAvailable().equals(false)) {
@@ -61,12 +60,8 @@ public class BookingServiceImpl implements BookingService {
         long itemId = booking.getItem().getId();
         if (itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new)
                 .getOwner().getId() != userId) {
-//            throw new BookingValidationException("current user is not an owner");
             throw new BookingNotFoundException("current user is not an owner");
         }
-//        if (approved == null) {
-//            throw new BookingValidationException();
-//        }
         if (approved) {
             booking.setStatus(Status.APPROVED);
         } else {
@@ -78,13 +73,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Booking getById(long userId, long bookingId)
-            throws ItemNotFoundException, BookingNotFoundException, BookingValidationException, UserNotFoundException {
+            throws ItemNotFoundException, BookingNotFoundException, UserNotFoundException {
         validateUserPresenceById(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(BookingNotFoundException::new);
         long bookerId = booking.getBooker().getId();
         long ownerId = itemRepository.findById(booking.getItem().getId()).orElseThrow(ItemNotFoundException::new).getOwner().getId();
         if (userId != bookerId && userId != ownerId) {
-//            throw new BookingValidationException("only owner and booker have access");
             throw new BookingNotFoundException("only owner and booker have access");
         }
         return booking;
@@ -120,11 +114,6 @@ public class BookingServiceImpl implements BookingService {
     public Collection<Booking> getAllByOwnerId(long ownerId, String state)
             throws UserNotFoundException, UnsupportedStateException {
         validateUserPresenceById(ownerId);
-//        User owner = userRepository.findById(ownerId).orElseThrow(UserNotFoundException::new);
-//        List<Item> ownerItems = owner.getItemsForSharing();
-//        if (ownerItems.isEmpty()) {
-//            return List.of();
-//        }
         Sort sort = Sort.sort(Booking.class).by(Booking::getStart).descending();
         switch (state) {
             case "ALL":

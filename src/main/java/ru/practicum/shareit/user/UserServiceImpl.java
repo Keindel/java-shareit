@@ -36,8 +36,6 @@ public class UserServiceImpl implements UserService {
     public User updateById(long userId, UserDto updatesOfUser) throws UserNotFoundException {
         User userFromRepo = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-//        User userFromRepoCopy = new User(userFromRepo.getId(), userFromRepo.getName(),
-//                userFromRepo.getEmail(), userFromRepo.getItemsIdsForSharing());
         if (updatesOfUser.getEmail() != null) {
             userFromRepo.setEmail(updatesOfUser.getEmail());
         }

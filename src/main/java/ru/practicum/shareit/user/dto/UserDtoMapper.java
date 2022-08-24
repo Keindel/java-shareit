@@ -19,10 +19,5 @@ public class UserDtoMapper {
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
         return user;
-//        return User.builder()
-//                .id(userDto.getId())
-//                .email(userDto.getEmail())
-//                .name(userDto.getName())
-//                .build();
     }
 }

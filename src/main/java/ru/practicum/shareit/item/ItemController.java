@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.CommentValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
-import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
@@ -39,7 +38,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemWithNearestBookingsDto getById(@PathVariable long itemId,
                                               @RequestHeader("X-Sharer-User-Id") long userId)
-            throws UserNotFoundException, ItemNotFoundException {
+            throws ItemNotFoundException {
         return itemService.getById(itemId, userId);
     }
 

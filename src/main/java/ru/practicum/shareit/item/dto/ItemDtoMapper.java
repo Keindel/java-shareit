@@ -11,7 +11,6 @@ public class ItemDtoMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-//                .numberOfUses()
                 .build();
     }
 
@@ -22,11 +21,5 @@ public class ItemDtoMapper {
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
         return item;
-//        return Item.builder()
-//                .id(itemDto.getId())
-//                .name(itemDto.getName())
-//                .description(itemDto.getDescription())
-//                .available(itemDto.getAvailable())
-//                .build();
     }
 }

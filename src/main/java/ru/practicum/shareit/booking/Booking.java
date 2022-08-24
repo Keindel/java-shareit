@@ -1,8 +1,5 @@
 package ru.practicum.shareit.booking;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
@@ -10,7 +7,6 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -28,11 +24,9 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NonNull
-//    @Future
     @Column(name = "start_date")
     private LocalDateTime start;
     @NonNull
-//    @Future
     @Column(name = "end_date")
     private LocalDateTime end;
 
