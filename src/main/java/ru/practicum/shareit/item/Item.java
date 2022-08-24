@@ -34,22 +34,27 @@ public class Item {
     @NotBlank
     @Size(max = 500)
     private String description;
+
     @NonNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     @ToString.Exclude
+    @JsonIgnore
     private User owner;
+
     @NotNull
     private Boolean available;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     @ToString.Exclude
+    @JsonIgnore
     private ItemRequest request;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
+    @JsonIgnore
     private List<Booking> bookings;
 
     @Override

@@ -30,4 +30,10 @@ public class ErrorHandler {
     public Map<String, String> handleBadRequest(final Exception e) {
         return Map.of("error: ", "check your request");
     }
+
+    @ExceptionHandler({UnsupportedStateException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUnsupported(final Exception e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

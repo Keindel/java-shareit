@@ -33,6 +33,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     @ToString.Exclude
+    @JsonIgnore
     private List<Item> itemsForSharing;
 
     @Override
