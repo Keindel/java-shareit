@@ -53,7 +53,7 @@ public class Booking {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return getClass().hashCode() + Objects.hash(id);
     }
 }
 

@@ -2,11 +2,9 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @EqualsAndHashCode
 public class BookingBookerIdDto {
-    Long id;
-    Long bookerId;
+    private final Long id;
+    private final Long bookerId;
 }

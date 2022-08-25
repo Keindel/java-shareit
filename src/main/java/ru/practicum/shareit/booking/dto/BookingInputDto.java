@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.validation.constraints.FutureOrPresent;
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@EqualsAndHashCode
 public class BookingInputDto {
     private Long id;
     @NotNull
