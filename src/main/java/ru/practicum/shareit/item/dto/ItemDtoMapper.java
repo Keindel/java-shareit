@@ -14,6 +14,16 @@ public class ItemDtoMapper {
                 .build();
     }
 
+    public ItemPerRequestDto mapToPerRequestDto(Item item) {
+        return ItemPerRequestDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequest().getId())
+                .build();
+    }
+
     public Item mapToItem(ItemDto itemDto) {
         Item item = new Item();
         item.setId(itemDto.getId());

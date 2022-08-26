@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.util.CustomPageable;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -86,24 +88,25 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<Booking> getAllByBookerId(long bookerId, String state)
+    public Collection<Booking> getAllByBookerId(long bookerId, String state, Integer from, Integer size)
             throws UserNotFoundException, UnsupportedStateException {
         validateUserPresenceById(bookerId);
-        Sort sort = Sort.sort(Booking.class).by(Booking::getStart).descending();
+
+        Pageable page = CustomPageable.of(from, size, Sort.sort(Booking.class).by(Booking::getStart).descending());
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllByBookerId(bookerId, sort);
+                return bookingRepository.findAllByBookerId(bookerId, page);
             case "PAST":
-                return bookingRepository.findAllByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now(), sort);
+                return bookingRepository.findAllByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now(), page);
             case "CURRENT":
                 LocalDateTime now = LocalDateTime.now();
-                return bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(bookerId, now, now, sort);
+                return bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(bookerId, now, now, page);
             case "FUTURE":
-                return bookingRepository.findAllByBookerIdAndStartIsAfter(bookerId, LocalDateTime.now(), sort);
+                return bookingRepository.findAllByBookerIdAndStartIsAfter(bookerId, LocalDateTime.now(), page);
             case "WAITING":
-                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.WAITING, sort);
+                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.WAITING, page);
             case "REJECTED":
-                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.REJECTED, sort);
+                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.REJECTED, page);
             default:
                 throw new UnsupportedStateException("Unknown state: UNSUPPORTED_STATUS");
         }
@@ -111,24 +114,25 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<Booking> getAllByOwnerId(long ownerId, String state)
+    public Collection<Booking> getAllByOwnerId(long ownerId, String state, Integer from, Integer size)
             throws UserNotFoundException, UnsupportedStateException {
         validateUserPresenceById(ownerId);
-        Sort sort = Sort.sort(Booking.class).by(Booking::getStart).descending();
+
+        Pageable page = CustomPageable.of(from, size, Sort.sort(Booking.class).by(Booking::getStart).descending());
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllByItemOwnerId(ownerId, sort);
+                return bookingRepository.findAllByItemOwnerId(ownerId, page);
             case "PAST":
-                return bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now(), sort);
+                return bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now(), page);
             case "CURRENT":
                 LocalDateTime now = LocalDateTime.now();
-                return bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId, now, now, sort);
+                return bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId, now, now, page);
             case "FUTURE":
-                return bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now(), sort);
+                return bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now(), page);
             case "WAITING":
-                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.WAITING, sort);
+                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.WAITING, page);
             case "REJECTED":
-                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.REJECTED, sort);
+                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.REJECTED, page);
             default:
                 throw new UnsupportedStateException("Unknown state: UNSUPPORTED_STATUS");
         }

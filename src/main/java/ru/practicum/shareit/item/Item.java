@@ -44,11 +44,13 @@ public class Item {
     @NotNull
     private Boolean available;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     @ToString.Exclude
     @JsonIgnore
     private ItemRequest request;
+
+    private Long requestId;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")

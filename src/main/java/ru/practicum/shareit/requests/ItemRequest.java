@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -24,7 +25,7 @@ public class ItemRequest {
     @NotBlank
     @Size(max = 500)
     private String description;
-    @NonNull
+    @NotNull
     @Column(name = "requester_id")
     private Long requesterId;
     @Column(name = "created")
