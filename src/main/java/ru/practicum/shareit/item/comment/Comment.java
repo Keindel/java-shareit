@@ -1,8 +1,10 @@
-package ru.practicum.shareit.requests;
+package ru.practicum.shareit.item.comment;
 
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -16,26 +18,32 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "requests")
-public class ItemRequest {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
     @Size(max = 500)
-    private String description;
+    @Column(name = "comment_text")
+    private String text;
     @NonNull
-    @Column(name = "requester_id")
-    private Long requesterId;
-    @Column(name = "created")
-    private LocalDateTime created = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+
+    private LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ItemRequest that = (ItemRequest) o;
-        return id != null && Objects.equals(id, that.id);
+        Comment comment = (Comment) o;
+        return id != null && Objects.equals(id, comment.id);
     }
 
     @Override

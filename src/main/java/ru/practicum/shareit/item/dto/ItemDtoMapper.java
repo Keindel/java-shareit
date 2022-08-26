@@ -11,16 +11,15 @@ public class ItemDtoMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-//                .numberOfUses()
                 .build();
     }
 
     public Item mapToItem(ItemDto itemDto) {
-        return Item.builder()
-                .id(itemDto.getId())
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .build();
+        Item item = new Item();
+        item.setId(itemDto.getId());
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        return item;
     }
 }

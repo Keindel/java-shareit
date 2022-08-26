@@ -1,20 +1,17 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.exceptions.ItemNotFoundException;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 
 import java.util.Collection;
 
-public interface ItemRepository {
-    Item addItem(long ownerId, Item item) throws UserNotFoundException;
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    Collection<Item> findAllByOwnerIdOrderByIdAsc(long ownerId) throws UserNotFoundException;
 
-    Collection<Item> getAllItemsOfOwner(long ownerId) throws UserNotFoundException;
-
-    Item getById(long id) throws ItemNotFoundException;
-
-    Item updateItem(Item item, long ownerId, long itemId) throws UserNotFoundException, ItemNotFoundException;
-
-    void deleteById(long ownerId, long id) throws UserNotFoundException;
-
+    @Query("SELECT it FROM Item it " +
+            "WHERE it.available=true " +
+            "AND (LOWER(it.name) LIKE LOWER(CONCAT('%', :text, '%') ) " +
+            "OR LOWER(it.description) LIKE LOWER(concat('%', :text, '%') ))")
     Collection<Item> searchItems(String text);
 }
