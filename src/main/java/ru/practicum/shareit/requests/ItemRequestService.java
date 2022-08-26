@@ -13,5 +13,5 @@ public interface ItemRequestService {
 
     List<ItemRequest> getAllByRequesterId(long requesterId) throws UserNotFoundException;
 
-    List<ItemRequest> getAllInPages(int from, int size);
+    List<ItemRequest> getAllOfOthersInPages(long userId, Integer from, Integer size);
 }

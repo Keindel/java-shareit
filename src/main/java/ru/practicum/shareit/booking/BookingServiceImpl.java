@@ -95,18 +95,18 @@ public class BookingServiceImpl implements BookingService {
         Pageable page = CustomPageable.of(from, size, Sort.sort(Booking.class).by(Booking::getStart).descending());
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllByBookerId(bookerId, page);
+                return bookingRepository.findAllByBookerId(bookerId, page).getContent();
             case "PAST":
-                return bookingRepository.findAllByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now(), page);
+                return bookingRepository.findAllByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now(), page).getContent();
             case "CURRENT":
                 LocalDateTime now = LocalDateTime.now();
-                return bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(bookerId, now, now, page);
+                return bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(bookerId, now, now, page).getContent();
             case "FUTURE":
-                return bookingRepository.findAllByBookerIdAndStartIsAfter(bookerId, LocalDateTime.now(), page);
+                return bookingRepository.findAllByBookerIdAndStartIsAfter(bookerId, LocalDateTime.now(), page).getContent();
             case "WAITING":
-                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.WAITING, page);
+                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.WAITING, page).getContent();
             case "REJECTED":
-                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.REJECTED, page);
+                return bookingRepository.findAllByBookerIdAndStatusEquals(bookerId, Status.REJECTED, page).getContent();
             default:
                 throw new UnsupportedStateException("Unknown state: UNSUPPORTED_STATUS");
         }
@@ -121,18 +121,18 @@ public class BookingServiceImpl implements BookingService {
         Pageable page = CustomPageable.of(from, size, Sort.sort(Booking.class).by(Booking::getStart).descending());
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllByItemOwnerId(ownerId, page);
+                return bookingRepository.findAllByItemOwnerId(ownerId, page).getContent();
             case "PAST":
-                return bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now(), page);
+                return bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now(), page).getContent();
             case "CURRENT":
                 LocalDateTime now = LocalDateTime.now();
-                return bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId, now, now, page);
+                return bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId, now, now, page).getContent();
             case "FUTURE":
-                return bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now(), page);
+                return bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now(), page).getContent();
             case "WAITING":
-                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.WAITING, page);
+                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.WAITING, page).getContent();
             case "REJECTED":
-                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.REJECTED, page);
+                return bookingRepository.findAllByItemOwnerIdAndStatusEquals(ownerId, Status.REJECTED, page).getContent();
             default:
                 throw new UnsupportedStateException("Unknown state: UNSUPPORTED_STATUS");
         }

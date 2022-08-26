@@ -47,8 +47,8 @@ public class BookingController {
     @GetMapping
     public Collection<BookingOutputDto> getAllByBookerId(@RequestHeader("X-Sharer-User-Id") long bookerId,
                                                          @RequestParam(required = false, defaultValue = "ALL") String state,
-                                                         @Valid @Min(0) @RequestParam Integer from,
-                                                         @Valid @Min(1) @RequestParam Integer size)
+                                                         @Valid @Min(0) @RequestParam(required = false) Integer from,
+                                                         @Valid @Min(1) @RequestParam(required = false) Integer size)
             throws UserNotFoundException, BookingValidationException, UnsupportedStateException {
         return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByBookerId(bookerId, state, from, size));
     }
@@ -56,8 +56,8 @@ public class BookingController {
     @GetMapping("/owner")
     public Collection<BookingOutputDto> getAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                                         @RequestParam(required = false, defaultValue = "ALL") String state,
-                                                        @Valid @Min(0) @RequestParam Integer from,
-                                                        @Valid @Min(1) @RequestParam Integer size)
+                                                        @Valid @Min(0) @RequestParam(required = false) Integer from,
+                                                        @Valid @Min(1) @RequestParam(required = false) Integer size)
             throws UserNotFoundException, BookingValidationException, UnsupportedStateException {
         return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByOwnerId(ownerId, state, from, size));
     }

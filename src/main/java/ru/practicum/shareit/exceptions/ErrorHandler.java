@@ -18,7 +18,8 @@ public class ErrorHandler {
             UserNotFoundException.class,
             RequestNotFoundException.class,
             ReviewNotFoundException.class,
-            BookingNotFoundException.class})
+            BookingNotFoundException.class,
+            ItemRequestNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleNotFound(final Exception e) {
         return Map.of("error: ", "object not found");

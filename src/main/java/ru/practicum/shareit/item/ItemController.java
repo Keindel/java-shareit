@@ -32,8 +32,8 @@ public class ItemController {
 
     @GetMapping
     public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                                                     @Valid @Min(0) @RequestParam Integer from,
-                                                                     @Valid @Min(1) @RequestParam Integer size)
+                                                                     @Valid @Min(0) @RequestParam(required = false) Integer from,
+                                                                     @Valid @Min(1) @RequestParam(required = false) Integer size)
             throws UserNotFoundException {
         return itemService.getAllItemsOfOwner(ownerId, from, size);
     }
@@ -60,8 +60,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public Collection<ItemDto> searchItems(@RequestParam String text,
-                                           @Valid @Min(0) @RequestParam Integer from,
-                                           @Valid @Min(1) @RequestParam Integer size) {
+                                           @Valid @Min(0) @RequestParam(required = false) Integer from,
+                                           @Valid @Min(1) @RequestParam(required = false) Integer size) {
         return itemService.searchItems(text, from, size).stream()
                 .map(itemDtoMapper::mapToDto).collect(Collectors.toList());
     }

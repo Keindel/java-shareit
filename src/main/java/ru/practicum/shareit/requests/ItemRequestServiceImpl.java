@@ -53,9 +53,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequest> getAllInPages(int from, int size) {
+    public List<ItemRequest> getAllOfOthersInPages(long userId, Integer from, Integer size) {
         Pageable page = CustomPageable.of(from, size, Sort.sort(ItemRequest.class).by(ItemRequest::getCreated).descending());
-        Page<ItemRequest> itemRequestPage = itemRequestRepository.findAll(page);
+        Page<ItemRequest> itemRequestPage = itemRequestRepository.findAllByRequesterIdNot(userId, page);
 
         return itemRequestPage.getContent();
     }

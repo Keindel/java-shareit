@@ -11,16 +11,7 @@ public class ItemDtoMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .build();
-    }
-
-    public ItemPerRequestDto mapToPerRequestDto(Item item) {
-        return ItemPerRequestDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .requestId(item.getRequest().getId())
+                .requestId(item.getRequestId())
                 .build();
     }
 

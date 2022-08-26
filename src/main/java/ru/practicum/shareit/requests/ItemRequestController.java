@@ -43,9 +43,10 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public Collection<ItemRequestWithResponsesDto> getAllInPages(@Valid @Min(0) @RequestParam int from,
-                                                                 @Valid @Min(1) @RequestParam int size) {
-        return itemRequestService.getAllInPages(from, size)
+    public Collection<ItemRequestWithResponsesDto> getAllOfOthersInPages(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                                                         @Valid @Min(0) @RequestParam(required = false) Integer from,
+                                                                         @Valid @Min(1) @RequestParam(required = false) Integer size) {
+        return itemRequestService.getAllOfOthersInPages(userId, from, size)
                 .stream().map(itemRequestMapper::toDtoWithResponses).collect(Collectors.toList());
     }
 }
