@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.requests.dto.ItemRequestInputDto;
 import ru.practicum.shareit.requests.dto.ItemRequestMapper;
 import ru.practicum.shareit.requests.dto.ItemRequestWithResponsesDto;
+import ru.practicum.shareit.user.User;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -48,11 +49,7 @@ public class ItemRequestControllerTest {
             .description("dd")
             .build();
 
-    Item item = new Item();
-
-    {
-        item.setId(7L);
-    }
+    Item item = new Item(7L, null, null, new User(), null, null, null);
 
     ItemRequestWithResponsesDto itemRequestWithResponsesDto = ItemRequestWithResponsesDto.builder()
             .id(itemRequest.getId())

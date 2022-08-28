@@ -2,7 +2,6 @@ package ru.practicum.shareit.requests;
 
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

@@ -2,11 +2,9 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAllByBookerId(long bookerId, Pageable page);

@@ -38,7 +38,7 @@ public class ItemRequestDtoTest {
     @Test
     public void testItemRequestWithResponsesDto() throws IOException {
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        List<Item> itemList = List.of(new Item(7l, "itemname", "itemdd", new User(), true, 9L, null));
+        List<Item> itemList = List.of(new Item(7L, "itemname", "itemdd", new User(), true, 9L, null));
         ItemRequestWithResponsesDto itemRequestWithResponsesDto = ItemRequestWithResponsesDto.builder()
                 .id(1L)
                 .description("dd")
