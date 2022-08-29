@@ -3,14 +3,19 @@ package ru.practicum.shareit.item;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
+import ru.practicum.shareit.exceptions.CommentValidationException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.comment.CommentDtoMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -18,6 +23,7 @@ import ru.practicum.shareit.item.dto.ItemWithNearestBookingsDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +36,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemServiceUnitTest {
+public class ItemServiceImplTest {
     @Mock
     private ItemRepository itemRepository;
     @Mock
@@ -48,7 +54,10 @@ public class ItemServiceUnitTest {
     private ItemServiceImpl itemService;
 
     User user = new User(1L, "username", "email@ya.ru", null);
+    User booker = new User(10L, "bookername", "booker@ya.ru", null);
     Item item = new Item(1L, "itemname", "dd", user, true, 8L, null);
+    Booking booking = new Booking(LocalDateTime.now().minusMinutes(2), LocalDateTime.now().minusMinutes(1), item, booker);
+
     ItemWithNearestBookingsDto itemWithNearestBookingsDto = ItemWithNearestBookingsDto.builder()
             .id(1L)
             .name("itemname")
@@ -59,6 +68,11 @@ public class ItemServiceUnitTest {
             .id(1L)
             .description("ddupdate")
             .name("itemnameupdate")
+            .build();
+
+    CommentDto commentDto = CommentDto.builder()
+            .text("text")
+            .authorName("username")
             .build();
 
     @Test
@@ -87,6 +101,14 @@ public class ItemServiceUnitTest {
                 .thenReturn(Optional.ofNullable(item));
 
         assertThat(itemService.getById(1L, 8L), equalTo(itemWithNearestBookingsDto));
+    }
+
+    @Test
+    public void shouldGetByIdWithNearestBookings() throws ItemNotFoundException {
+        when(itemRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(item));
+
+        assertThat(itemService.getById(1L, 1L), equalTo(itemWithNearestBookingsDto));
     }
 
     @Test
@@ -136,6 +158,22 @@ public class ItemServiceUnitTest {
         assertThat(searchResult, hasSize(1));
         assertThat(searchResult, equalTo(List.of(item)));
         assertThat(searchResult, hasItem(item));
+    }
+
+    @Test
+    public void shouldAddComment() throws UserNotFoundException, CommentValidationException, ItemNotFoundException {
+        item.setBookings(List.of(booking));
+
+        when(itemRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(item));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(booker));
+        when(commentRepository.save(ArgumentMatchers.any(Comment.class)))
+                .thenAnswer(invoc -> invoc.getArguments()[0]);
+        when(commentDtoMapper.toDto(ArgumentMatchers.any(Comment.class)))
+                .thenReturn(commentDto);
+
+        assertThat(itemService.addComment(1L, commentDto, 10L), equalTo(commentDto));
     }
 
     @Test

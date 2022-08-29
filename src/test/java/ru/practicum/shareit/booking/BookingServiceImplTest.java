@@ -158,7 +158,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void shouldFailUpdateStatusApproved() throws UserNotFoundException, BookingNotFoundException, BookingValidationException, ItemNotFoundException {
+    public void shouldFailUpdateStatusApproved() {
         booking.setId(1L);
         booking.setItem(item);
         booking.setBooker(booker);
@@ -174,7 +174,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void shouldFailUpdateOnNotOwner() throws UserNotFoundException, BookingNotFoundException, BookingValidationException, ItemNotFoundException {
+    public void shouldFailUpdateOnNotOwner() {
         booking.setId(1L);
         booking.setItem(item);
         booking.setBooker(booker);

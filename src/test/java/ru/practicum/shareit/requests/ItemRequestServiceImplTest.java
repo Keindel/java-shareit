@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(value = MockitoExtension.class)
-public class ItemRequestServiceTest {
+public class ItemRequestServiceImplTest {
     @Mock
     private ItemRequestRepository itemRequestRepository;
     @Mock

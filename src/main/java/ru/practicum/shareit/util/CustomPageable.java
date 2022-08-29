@@ -1,5 +1,6 @@
 package ru.practicum.shareit.util;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
@@ -7,6 +8,7 @@ import org.springframework.lang.NonNull;
 import javax.validation.ValidationException;
 import java.util.Optional;
 
+@EqualsAndHashCode
 public class CustomPageable implements Pageable {
     private final int offset;
     private final int limit;
