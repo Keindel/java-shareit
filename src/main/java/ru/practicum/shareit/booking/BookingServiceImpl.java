@@ -73,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public Booking getById(long userId, long bookingId)
             throws ItemNotFoundException, BookingNotFoundException, UserNotFoundException {
         validateUserPresenceById(userId);
@@ -87,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public Collection<Booking> getAllByBookerId(long bookerId, String state, Integer from, Integer size)
             throws UserNotFoundException, UnsupportedStateException {
         validateUserPresenceById(bookerId);
@@ -113,7 +113,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public Collection<Booking> getAllByOwnerId(long ownerId, String state, Integer from, Integer size)
             throws UserNotFoundException, UnsupportedStateException {
         validateUserPresenceById(ownerId);

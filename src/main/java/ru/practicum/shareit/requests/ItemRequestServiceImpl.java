@@ -19,7 +19,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(propagation = Propagation.REQUIRED)
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
@@ -28,6 +27,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestMapper itemRequestMapper;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public ItemRequest add(long requesterId, ItemRequestInputDto itemRequestInputDto) throws UserNotFoundException {
         validateUserId(requesterId);
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestInputDto, requesterId);

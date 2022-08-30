@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(long ownerId, Integer from, Integer size)
             throws UserNotFoundException {
         LocalDateTime now = LocalDateTime.now();
@@ -73,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public ItemWithNearestBookingsDto getById(long id, long userId) throws ItemNotFoundException {
         LocalDateTime now = LocalDateTime.now();
 
@@ -163,6 +163,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Item> findAllByRequestId(long requestId) {
         return itemRepository.findAllByRequestId(requestId);
     }
