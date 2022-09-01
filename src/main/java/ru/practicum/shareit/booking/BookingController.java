@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.exceptions.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.Collection;
 
 @Slf4j
@@ -45,15 +46,19 @@ public class BookingController {
 
     @GetMapping
     public Collection<BookingOutputDto> getAllByBookerId(@RequestHeader("X-Sharer-User-Id") long bookerId,
-                                                         @RequestParam(required = false, defaultValue = "ALL") String state)
+                                                         @RequestParam(required = false, defaultValue = "ALL") String state,
+                                                         @Valid @Min(0) @RequestParam(required = false) Integer from,
+                                                         @Valid @Min(1) @RequestParam(required = false) Integer size)
             throws UserNotFoundException, BookingValidationException, UnsupportedStateException {
-        return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByBookerId(bookerId, state));
+        return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByBookerId(bookerId, state, from, size));
     }
 
     @GetMapping("/owner")
     public Collection<BookingOutputDto> getAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                                        @RequestParam(required = false, defaultValue = "ALL") String state)
+                                                        @RequestParam(required = false, defaultValue = "ALL") String state,
+                                                        @Valid @Min(0) @RequestParam(required = false) Integer from,
+                                                        @Valid @Min(1) @RequestParam(required = false) Integer size)
             throws UserNotFoundException, BookingValidationException, UnsupportedStateException {
-        return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByOwnerId(ownerId, state));
+        return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByOwnerId(ownerId, state, from, size));
     }
 }

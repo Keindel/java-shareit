@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.ItemWithNearestBookingsDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.util.CustomPageable;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -47,11 +50,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(long ownerId) throws UserNotFoundException {
+    @Transactional(readOnly = true)
+    public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(long ownerId, Integer from, Integer size)
+            throws UserNotFoundException {
         LocalDateTime now = LocalDateTime.now();
 
-        return itemRepository.findAllByOwnerIdOrderByIdAsc(ownerId).stream().map(item ->
+        Pageable page = CustomPageable.of(from, size, Sort.sort(Item.class).by(Item::getId).ascending());
+
+        return itemRepository.findAllByOwnerId(ownerId, page).stream().map(item ->
                 ItemWithNearestBookingsDto.builder()
                         .id(item.getId())
                         .name(item.getName())
@@ -67,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public ItemWithNearestBookingsDto getById(long id, long userId) throws ItemNotFoundException {
         LocalDateTime now = LocalDateTime.now();
 
@@ -127,11 +133,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Item> searchItems(String text) {
+    public Collection<Item> searchItems(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return List.of();
         }
-        return itemRepository.searchItems(text);
+
+        Pageable page = CustomPageable.of(from, size, Sort.sort(Item.class).by(Item::getId).ascending());
+
+        return itemRepository.searchItems(text, page).getContent();
     }
 
     public CommentDto addComment(long itemId, CommentDto commentDto, long userId)
@@ -151,5 +160,11 @@ public class ItemServiceImpl implements ItemService {
         comment.setAuthor(user);
         comment.setCreated(LocalDateTime.now());
         return commentDtoMapper.toDto(commentRepository.save(comment));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Item> findAllByRequestId(long requestId) {
+        return itemRepository.findAllByRequestId(requestId);
     }
 }

@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.requests.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
@@ -44,11 +43,7 @@ public class Item {
     @NotNull
     private Boolean available;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id")
-    @ToString.Exclude
-    @JsonIgnore
-    private ItemRequest request;
+    private Long requestId;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
@@ -66,6 +61,6 @@ public class Item {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return getClass().hashCode() + Objects.hashCode(id);
     }
 }
