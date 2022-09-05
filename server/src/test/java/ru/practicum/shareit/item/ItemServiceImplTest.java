@@ -56,7 +56,7 @@ public class ItemServiceImplTest {
     User user = new User(1L, "username", "email@ya.ru", null);
     User booker = new User(10L, "bookername", "booker@ya.ru", null);
     Item item = new Item(1L, "itemname", "dd", user, true, 8L, null);
-    Booking booking = new Booking(LocalDateTime.now().minusMinutes(2), LocalDateTime.now().minusMinutes(1), item, booker);
+    Booking booking = new Booking(null, LocalDateTime.now().minusMinutes(2), LocalDateTime.now().minusMinutes(1), item, booker, null);
 
     ItemWithNearestBookingsDto itemWithNearestBookingsDto = ItemWithNearestBookingsDto.builder()
             .id(1L)

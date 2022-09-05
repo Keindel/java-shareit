@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoMapper;
 
@@ -62,32 +61,6 @@ public class UserControllerWithContextTest {
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName()), String.class))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail()), String.class));
-    }
-
-    @Test
-    public void shouldFailAddUserWithoutName() throws Exception {
-        user = new User(1L, null, "email@ya.ru", null);
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(400));
-    }
-
-    @Test
-    public void shouldFailAddUserWithWrongEmail() throws Exception {
-        user = new User(1L, "username", " ", null);
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(400));
     }
 
     @Test

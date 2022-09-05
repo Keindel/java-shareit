@@ -52,7 +52,7 @@ public class BookingServiceImplTest {
             .end(nowPlusMin)
             .itemId(1L)
             .build();
-    Booking booking = new Booking(nowPlus10s, nowPlusMin, new Item(), new User());
+    Booking booking = new Booking(null, nowPlus10s, nowPlusMin, new Item(), new User(), null);
 
     @Test
     public void shouldMakeBooking() throws UserNotFoundException, BookingNotFoundException, BookingValidationException, ItemNotFoundException {
@@ -204,7 +204,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void shouldFailGetByIdOnWrongUser() throws UserNotFoundException, BookingNotFoundException, ItemNotFoundException {
+    public void shouldFailGetByIdOnWrongUser() {
         booking.setBooker(booker);
         booking.setItem(item);
         when(userRepository.existsById(anyLong()))
