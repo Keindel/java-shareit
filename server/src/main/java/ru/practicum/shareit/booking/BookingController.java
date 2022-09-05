@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
@@ -23,7 +24,7 @@ public class BookingController {
 
     @PostMapping
     public BookingOutputDto makeBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                        @Valid @RequestBody BookingInputDto bookingInputDto)
+                                        @Valid @RequestBody BookItemRequestDto bookingInputDto)
             throws BookingValidationException, ItemNotFoundException, UserNotFoundException, BookingNotFoundException {
         return bookingDtoMapper.mapToOutputDto(bookingService.makeBooking(userId,
                 bookingInputDto));

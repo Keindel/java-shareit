@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 @Builder
 public class BookingInputDto {
     private Long id;
-    @NotNull
-    @FutureOrPresent
+//    @NotNull
+//    @FutureOrPresent
     @Column(name = "start_date")
     private LocalDateTime start;
-    @NotNull
-    @FutureOrPresent
+//    @NotNull
+//    @FutureOrPresent
     @Column(name = "end_date")
     private LocalDateTime end;
-    @NotNull
+//    @NotNull
     private Long itemId;
 }

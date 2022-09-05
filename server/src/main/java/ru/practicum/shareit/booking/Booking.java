@@ -23,19 +23,19 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NonNull
+//    @NonNull
     @Column(name = "start_date")
     private LocalDateTime start;
-    @NonNull
+//    @NonNull
     @Column(name = "end_date")
     private LocalDateTime end;
 
-    @NonNull
+//    @NonNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
     private Item item;
-    @NonNull
+//    @NonNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "booker_id")
     @ToString.Exclude
