@@ -11,8 +11,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.ItemWithNearestBookingsDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -26,14 +24,14 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                           @Valid @RequestBody Item item) throws UserNotFoundException {
+                           @RequestBody Item item) throws UserNotFoundException {
         return itemDtoMapper.mapToDto(itemService.addItem(ownerId, item));
     }
 
     @GetMapping
     public Collection<ItemWithNearestBookingsDto> getAllItemsOfOwner(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                                                     @Valid @Min(0) @RequestParam(required = false) Integer from,
-                                                                     @Valid @Min(1) @RequestParam(required = false) Integer size)
+                                                                     @RequestParam(required = false) Integer from,
+                                                                     @RequestParam(required = false) Integer size)
             throws UserNotFoundException {
         return itemService.getAllItemsOfOwner(ownerId, from, size);
     }
@@ -60,15 +58,15 @@ public class ItemController {
 
     @GetMapping("/search")
     public Collection<ItemDto> searchItems(@RequestParam String text,
-                                           @Valid @Min(0) @RequestParam(required = false) Integer from,
-                                           @Valid @Min(1) @RequestParam(required = false) Integer size) {
+                                           @RequestParam(required = false) Integer from,
+                                           @RequestParam(required = false) Integer size) {
         return itemService.searchItems(text, from, size).stream()
                 .map(itemDtoMapper::mapToDto).collect(Collectors.toList());
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable long itemId,
-                                 @Valid @RequestBody CommentDto commentDto,
+                                 @RequestBody CommentDto commentDto,
                                  @RequestHeader("X-Sharer-User-Id") long userId)
             throws UserNotFoundException, CommentValidationException, ItemNotFoundException {
         return (itemService.addComment(itemId, commentDto, userId));

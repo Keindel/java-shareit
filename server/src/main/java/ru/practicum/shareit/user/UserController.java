@@ -7,7 +7,6 @@ import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoMapper;
 
-import javax.validation.Valid;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,7 @@ public class UserController {
     private final UserDtoMapper userDtoMapper;
 
     @PostMapping
-    public UserDto addUser(@Valid @RequestBody User user) {
+    public UserDto addUser(@RequestBody User user) {
         return userDtoMapper.mapToDto(userService.addUser(user));
     }
 

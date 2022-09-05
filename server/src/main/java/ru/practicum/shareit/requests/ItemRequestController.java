@@ -9,8 +9,6 @@ import ru.practicum.shareit.requests.dto.ItemRequestInputDto;
 import ru.practicum.shareit.requests.dto.ItemRequestMapper;
 import ru.practicum.shareit.requests.dto.ItemRequestWithResponsesDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -24,7 +22,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequest add(@RequestHeader(value = "X-Sharer-User-Id") long requesterId,
-                           @Valid @RequestBody ItemRequestInputDto itemRequestInputDto) throws UserNotFoundException {
+                           @RequestBody ItemRequestInputDto itemRequestInputDto) throws UserNotFoundException {
         return itemRequestService.add(requesterId, itemRequestInputDto);
     }
 
@@ -44,8 +42,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public Collection<ItemRequestWithResponsesDto> getAllOfOthersInPages(@RequestHeader(value = "X-Sharer-User-Id") long userId,
-                                                                         @Valid @Min(0) @RequestParam(required = false) Integer from,
-                                                                         @Valid @Min(1) @RequestParam(required = false) Integer size) {
+                                                                         @RequestParam(required = false) Integer from,
+                                                                         @RequestParam(required = false) Integer size) {
         return itemRequestService.getAllOfOthersInPages(userId, from, size)
                 .stream().map(itemRequestMapper::toDtoWithResponses).collect(Collectors.toList());
     }

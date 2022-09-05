@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
@@ -30,10 +30,10 @@ public class BookingController {
 		BookingState state = BookingState.from(stateParam)
 				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-		return bookingClient.getBookings(userId, state, from, size);
+		return bookingClient.getBookingsByBooker(userId, state, from, size);
 	}
 
-	@GetMapping
+	@GetMapping("/owner")
 	public ResponseEntity<Object> getBookingsByOwner(@RequestHeader("X-Sharer-User-Id") long userId,
 			@RequestParam(name = "state", defaultValue = "all") String stateParam,
 			@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
@@ -46,7 +46,7 @@ public class BookingController {
 
 	@PostMapping
 	public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
-			@RequestBody @Valid BookItemRequestDto requestDto) {
+			@RequestBody @Valid BookingInputDto requestDto) {
 		log.info("Creating booking {}, userId={}", requestDto, userId);
 		return bookingClient.bookItem(userId, requestDto);
 	}
@@ -54,7 +54,7 @@ public class BookingController {
 	@PatchMapping("/{bookingId}")
 	public ResponseEntity<Object> updateStatus(@RequestHeader("X-Sharer-User-Id") long userId,
 											   @PathVariable long bookingId,
-											   @RequestParam boolean approved) {
+											   @RequestParam Boolean approved) {
 		log.info("Updating booking {}, status {}, userId={}", bookingId, approved, userId);
 		return bookingClient.updateStatus(bookingId, userId, approved);
 	}

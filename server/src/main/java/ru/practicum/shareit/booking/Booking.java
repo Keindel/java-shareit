@@ -2,18 +2,17 @@ package ru.practicum.shareit.booking;
 
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.springframework.lang.NonNull;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -23,23 +22,24 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @NonNull
+    @NotNull
     @Column(name = "start_date")
     private LocalDateTime start;
-//    @NonNull
+    @NotNull
     @Column(name = "end_date")
     private LocalDateTime end;
 
-//    @NonNull
+    @NotNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
     private Item item;
-//    @NonNull
+    @NotNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "booker_id")
     @ToString.Exclude
     private User booker;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

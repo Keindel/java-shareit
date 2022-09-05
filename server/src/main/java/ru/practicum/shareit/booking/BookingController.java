@@ -3,14 +3,11 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.exceptions.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.Collection;
 
 @Slf4j
@@ -24,7 +21,7 @@ public class BookingController {
 
     @PostMapping
     public BookingOutputDto makeBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                        @Valid @RequestBody BookItemRequestDto bookingInputDto)
+                                        @RequestBody BookingInputDto bookingInputDto)
             throws BookingValidationException, ItemNotFoundException, UserNotFoundException, BookingNotFoundException {
         return bookingDtoMapper.mapToOutputDto(bookingService.makeBooking(userId,
                 bookingInputDto));
@@ -48,8 +45,8 @@ public class BookingController {
     @GetMapping
     public Collection<BookingOutputDto> getAllByBookerId(@RequestHeader("X-Sharer-User-Id") long bookerId,
                                                          @RequestParam(required = false, defaultValue = "ALL") String state,
-                                                         @Valid @Min(0) @RequestParam(required = false) Integer from,
-                                                         @Valid @Min(1) @RequestParam(required = false) Integer size)
+                                                         @RequestParam(required = false) Integer from,
+                                                         @RequestParam(required = false) Integer size)
             throws UserNotFoundException, BookingValidationException, UnsupportedStateException {
         return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByBookerId(bookerId, state, from, size));
     }
@@ -57,8 +54,8 @@ public class BookingController {
     @GetMapping("/owner")
     public Collection<BookingOutputDto> getAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                                         @RequestParam(required = false, defaultValue = "ALL") String state,
-                                                        @Valid @Min(0) @RequestParam(required = false) Integer from,
-                                                        @Valid @Min(1) @RequestParam(required = false) Integer size)
+                                                        @RequestParam(required = false) Integer from,
+                                                        @RequestParam(required = false) Integer size)
             throws UserNotFoundException, BookingValidationException, UnsupportedStateException {
         return bookingDtoMapper.mapToDtoCollection(bookingService.getAllByOwnerId(ownerId, state, from, size));
     }
