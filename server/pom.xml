@@ -8,14 +8,10 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>shareit-server</artifactId>
+	<artifactId>server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>ShareIt Server</name>
-
-	<properties>
-		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
-	</properties>
 
 	<dependencies>
 		<dependency>
